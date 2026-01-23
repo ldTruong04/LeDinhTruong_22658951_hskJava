@@ -1,0 +1,21 @@
+package Tuan1;
+
+import javax.swing.JFrame;
+
+public class GiaPTB2 extends JFrame{
+	public GiaPTB2() {
+		
+		
+		//Nouth
+		setSize(500, 500);
+		
+	}
+	
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		new GiaPTB2().setVisible(true);
+
+	}
+
+}

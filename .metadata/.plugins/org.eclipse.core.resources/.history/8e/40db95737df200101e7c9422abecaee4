@@ -1,0 +1,151 @@
+package Tuan1;
+
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class CongTruNhanChia extends JFrame implements ActionListener {
+
+    private JTextField txtA, txtB, txtKetQua;
+    private JButton btnGiai, btnXoa, btnThoat;
+    private JRadioButton radCong, radTru, radNhan, radChia;
+
+    public CongTruNhanChia() {
+        setTitle("Cộng - Trừ - Nhân - Chia");
+        setSize(550, 450);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        // 1. Tiêu đề (North)
+        JPanel pnNorth = new JPanel();
+        JLabel lblTitle = new JLabel("Cộng Trừ Nhân Chia");
+        lblTitle.setForeground(Color.BLUE);
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
+        pnNorth.add(lblTitle);
+        add(pnNorth, BorderLayout.NORTH);
+
+        // 2. Cột chức năng bên trái (West)
+        JPanel pnWest = new JPanel();
+        pnWest.setLayout(new BoxLayout(pnWest, BoxLayout.Y_AXIS));
+        pnWest.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.RED), "Chọn tác vụ"));
+        pnWest.setBackground(Color.LIGHT_GRAY);
+
+        btnGiai = new JButton("Giải");
+        btnXoa = new JButton("Xóa");
+        btnThoat = new JButton("Thoát");
+
+        // Đăng ký sự kiện
+        btnGiai.addActionListener(this);
+        btnXoa.addActionListener(this);
+        btnThoat.addActionListener(this);
+
+        pnWest.add(Box.createVerticalStrut(10));
+        pnWest.add(btnGiai); pnWest.add(Box.createVerticalStrut(10));
+        pnWest.add(btnXoa); pnWest.add(Box.createVerticalStrut(10));
+        pnWest.add(btnThoat);
+        add(pnWest, BorderLayout.WEST);
+
+        // 3. Phần nội dung chính (Center)
+        JPanel pnCenter = new JPanel();
+        pnCenter.setLayout(null);
+        pnCenter.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.RED), "Tính toán"));
+
+        JLabel lblA = new JLabel("Nhập a:");
+        lblA.setBounds(30, 30, 60, 25);
+        txtA = new JTextField();
+        txtA.setBounds(100, 30, 280, 25);
+
+        JLabel lblB = new JLabel("Nhập b:");
+        lblB.setBounds(30, 70, 60, 25);
+        txtB = new JTextField();
+        txtB.setBounds(100, 70, 280, 25);
+
+        // Group phép toán
+        JPanel pnPhepToan = new JPanel(new GridLayout(2, 2));
+        pnPhepToan.setBorder(BorderFactory.createTitledBorder("Phép toán"));
+        pnPhepToan.setBounds(100, 110, 280, 100);
+
+        radCong = new JRadioButton("Cộng", true);
+        radTru = new JRadioButton("Trừ");
+        radNhan = new JRadioButton("Nhân");
+        radChia = new JRadioButton("Chia");
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(radCong); group.add(radTru); group.add(radNhan); group.add(radChia);
+
+        pnPhepToan.add(radCong); pnPhepToan.add(radTru);
+        pnPhepToan.add(radNhan); pnPhepToan.add(radChia);
+
+        JLabel lblKQ = new JLabel("Kết quả:");
+        lblKQ.setBounds(30, 230, 60, 25);
+        txtKetQua = new JTextField();
+        txtKetQua.setBounds(100, 230, 280, 25);
+        txtKetQua.setEditable(false);
+
+        pnCenter.add(lblA); pnCenter.add(txtA);
+        pnCenter.add(lblB); pnCenter.add(txtB);
+        pnCenter.add(pnPhepToan);
+        pnCenter.add(lblKQ); pnCenter.add(txtKetQua);
+        add(pnCenter, BorderLayout.CENTER);
+
+        // 4. Thanh màu dưới cùng (South)
+        JPanel pnSouth = new JPanel();
+        pnSouth.setBackground(Color.PINK);
+        pnSouth.setPreferredSize(new Dimension(0, 40));
+        add(pnSouth, BorderLayout.SOUTH);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object o = e.getSource();
+        if (o.equals(btnGiai)) {
+            xuLyGiai();
+        } else if (o.equals(btnXoa)) {
+            xuLyXoa();
+        } else if (o.equals(btnThoat)) {
+            xuLyThoat();
+        }
+    }
+
+    private void xuLyGiai() {
+        try {
+            double a = Double.parseDouble(txtA.getText());
+            double b = Double.parseDouble(txtB.getText());
+            double kq = 0;
+
+            if (radCong.isSelected()) kq = a + b;
+            else if (radTru.isSelected()) kq = a - b;
+            else if (radNhan.isSelected()) kq = a * b;
+            else if (radChia.isSelected()) {
+                if (b == 0) {
+                    JOptionPane.showMessageDialog(this, "Không thể chia cho 0!");
+                    return;
+                }
+                kq = a / b;
+            }
+            txtKetQua.setText(String.valueOf(kq));
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số hợp lệ!");
+        }
+    }
+
+    private void xuLyXoa() {
+        txtA.setText("");
+        txtB.setText("");
+        txtKetQua.setText("");
+        radCong.setSelected(true);
+        txtA.requestFocus();
+    }
+
+    private void xuLyThoat() {
+        int choice = JOptionPane.showConfirmDialog(this, "Bạn có muốn thoát?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (choice == JOptionPane.YES_OPTION) System.exit(0);
+    }
+
+    public static void main(String[] args) {
+        new CongTruNhanChia().setVisible(true);
+    }
+}

@@ -1,0 +1,124 @@
+/**
+ * 
+ */
+package Tuan1;
+
+/**
+ * @author Student
+ *
+ */
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class GiaiPhuongTrinhBacHai extends JFrame {
+
+    private JTextField txtA, txtB, txtC, txtKetQua;
+    private JButton btnGiai, btnXoa, btnThoat;
+
+    public GiaiPhuongTrinhBacHai() {
+        setTitle("^-^");
+        setSize(500, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        // North
+        JPanel pnNorth = new JPanel();
+        pnNorth.setBackground(Color.CYAN);
+        JLabel lblTitle = new JLabel("GIẢI PHƯƠNG TRÌNH BẬC HAI");
+        lblTitle.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        pnNorth.add(lblTitle);
+        add(pnNorth, BorderLayout.NORTH);
+
+        //Center
+        JPanel pnCenter = new JPanel();
+        pnCenter.setLayout(null); 
+
+        JLabel lblA = new JLabel("Nhập a:");
+        lblA.setBounds(50, 30, 80, 25);
+        txtA = new JTextField();
+        txtA.setBounds(150, 30, 280, 25);
+
+        JLabel lblB = new JLabel("Nhập b:");
+        lblB.setBounds(50, 70, 80, 25);
+        txtB = new JTextField();
+        txtB.setBounds(150, 70, 280, 25);
+
+        JLabel lblC = new JLabel("Nhập c:");
+        lblC.setBounds(50, 110, 80, 25);
+        txtC = new JTextField();
+        txtC.setBounds(150, 110, 280, 25);
+
+        JLabel lblKQ = new JLabel("Kết quả:");
+        lblKQ.setBounds(50, 150, 80, 25);
+        txtKetQua = new JTextField();
+        txtKetQua.setBounds(150, 150, 280, 25);
+        txtKetQua.setEditable(false); // Không cho nhập vào
+
+        pnCenter.add(lblA); pnCenter.add(txtA);
+        pnCenter.add(lblB); pnCenter.add(txtB);
+        pnCenter.add(lblC); pnCenter.add(txtC);
+        pnCenter.add(lblKQ); pnCenter.add(txtKetQua);
+        
+        add(pnCenter, BorderLayout.CENTER);
+
+        // South
+        JPanel pnSouth = new JPanel();
+        pnSouth.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(), "Chọn tác vụ", TitledBorder.LEFT, TitledBorder.TOP));
+        
+        btnGiai = new JButton("Giải");
+        btnXoa = new JButton("Xóa rỗng");
+        btnThoat = new JButton("Thoát");
+        
+        pnSouth.add(btnGiai);
+        pnSouth.add(btnXoa);
+        pnSouth.add(btnThoat);
+        add(pnSouth, BorderLayout.SOUTH);
+
+        // Xử lý
+        btnThoat.addActionListener(e -> System.exit(0));
+
+        btnXoa.addActionListener(e -> {
+            txtA.setText("");
+            txtB.setText("");
+            txtC.setText("");
+            txtKetQua.setText("");
+            txtA.requestFocus();
+        });
+
+        btnGiai.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    double a = Double.parseDouble(txtA.getText());
+                    double b = Double.parseDouble(txtB.getText());
+                    double c = Double.parseDouble(txtC.getText());
+                    txtKetQua.setText(giaiPT(a, b, c));
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập số hợp lệ!");
+                }
+            }
+        });
+    }
+
+    private String giaiPT(double a, double b, double c) {
+        if (a == 0) {
+            if (b == 0) return (c == 0) ? "Vô số nghiệm" : "Vô nghiệm";
+            return "x = " + (-c / b);
+        }
+        double delta = b * b - 4 * a * c;
+        if (delta < 0) return "Phương trình vô nghiệm";
+        if (delta == 0) return "Nghiệm kép x1 = x2 = " + (-b / (2 * a));
+        double x1 = (-b + Math.sqrt(delta)) / (2 * a);
+        double x2 = (-b - Math.sqrt(delta)) / (2 * a);
+        return "x1 = " + x1 + ", x2 = " + x2;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new GiaiPhuongTrinhBacHai().setVisible(true));
+    }
+}

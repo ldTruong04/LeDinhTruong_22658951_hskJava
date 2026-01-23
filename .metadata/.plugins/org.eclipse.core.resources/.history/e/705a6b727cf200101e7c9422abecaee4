@@ -1,0 +1,106 @@
+package Tuan1;
+
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+
+
+
+
+public class GiaPTB2 extends JFrame{
+	private JTextField txtA, txtB, txtC, txtKetQua;
+    private JButton btnGiai, btnXoa, btnThoat;
+	
+
+
+	public GiaPTB2() {
+		setTitle("^-^");
+        setSize(500, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+		
+		
+		//North
+		JPanel pnNorth = new JPanel();
+		pnNorth.setBackground(Color.CYAN);
+		JLabel lblTitle = new JLabel("GIẢI PHƯƠNG TRÌNH BẬC HAI");
+		lblTitle.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		
+		pnNorth.add(lblTitle);
+		add(pnNorth, BorderLayout.NORTH);
+		
+		//Center
+		JPanel pnCenter = new JPanel();
+		pnCenter.setLayout(null);
+		     //Nhập a
+		JLabel lblA = new JLabel("Nhập a:");
+		lblA.setBounds(50,30,80,25);
+		txtA= new JTextField();
+		txtA.setBounds(150,30,280,25);
+		      //Nhập b
+		JLabel lblB = new JLabel("Nhập b:");
+		lblB.setBounds(50,60,80,25);
+		txtB = new JTextField();
+		txtB.setBounds(150,60,280,25);
+		      //Nhập c
+		JLabel lblC = new JLabel("Nhập c:");
+		lblC.setBounds(50,90,80,25);
+		txtC = new JTextField();
+		txtC.setBounds(150,90,280,25);
+		     //Kết quả 
+		
+		JLabel lblKQ = new JLabel("Kết Qủa:");
+		lblKQ.setBounds(50,120,80,25);
+		txtKetQua = new JTextField();
+		txtKetQua.setBounds(150,120,280,25);
+		txtKetQua.setEditable(false); //Không cho phép nhập
+		
+		
+		
+		pnCenter.add(lblA); pnCenter.add(txtA);
+		pnCenter.add(lblB); pnCenter.add(txtB);
+		pnCenter.add(lblC); pnCenter.add(txtC);
+		pnCenter.add(lblKQ); pnCenter.add(txtKetQua);
+		add(pnCenter,BorderLayout.CENTER);
+		
+		//South
+		
+		JPanel pnSouth = new JPanel();
+		pnSouth.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(),"Chọn tac vụ",TitledBorder.LEFT,TitledBorder.TOP));
+		
+		btnGiai = new JButton("Giải");
+		btnThoat = new JButton("Thoat");
+		btnXoa = new JButton("Xóa");
+		
+		pnSouth.add(btnGiai);
+		pnSouth.add(btnThoat);
+		pnSouth.add(btnXoa);
+		
+		add(pnSouth,BorderLayout.SOUTH);
+		
+		
+		
+
+        
+     
+	}
+	
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		new GiaPTB2().setVisible(true);
+
+	}
+
+}
