@@ -5,8 +5,11 @@ import java.util.*;
 
 public class DanhSachNhanVien implements Serializable {
     private ArrayList<NhanVien> list;
+    
 
-    public DanhSachNhanVien() {
+    
+
+	public DanhSachNhanVien() {
         list = new ArrayList<NhanVien>();
     }
 

@@ -41,10 +41,11 @@ public class frmNhanVien extends JFrame implements ActionListener, MouseListener
     
     // Thuộc tính từ ảnh 2
     fileDocGhi fi;
-    private JLabel lblPhong;
+    
     private JTextField txtPhong;
     private JComboBox cboPhong;
     private JButton btnSua;
+	private JLabel lblPhong;
     private static final String tenfile = "data";
 
     public frmNhanVien(DanhSachNhanVien dao) throws Exception {
@@ -93,7 +94,6 @@ public class frmNhanVien extends JFrame implements ActionListener, MouseListener
 
         // Căn chỉnh kích thước nhãn
         lblHo.setPreferredSize(lblMaNV.getPreferredSize());
-        lblPhai.setPreferredSize(lblMaNV.getPreferredSize());
         lblPhong.setPreferredSize(lblMaNV.getPreferredSize());
         lblTuoi.setPreferredSize(lblMaNV.getPreferredSize());
 
@@ -104,15 +104,9 @@ public class frmNhanVien extends JFrame implements ActionListener, MouseListener
         tableModel = new DefaultTableModel(headers, 0);
         JScrollPane scroll = new JScrollPane();
         scroll.setViewportView(table = new JTable(tableModel));
-        table.setRowHeight(25);
-        table.setAutoCreateRowSorter(true);
-        
-        
-    
-//Tiếp tục phần GUI ở ảnh 4
-table.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
-b5.add(scroll);
-add(b, BorderLayout.CENTER);
+       
+        b5.add(scroll);
+        add(b, BorderLayout.CENTER);
 
 JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 add(split, BorderLayout.SOUTH);
@@ -131,6 +125,7 @@ pnlRight.add(btnXoa = new JButton("Xóa"));
 pnlRight.add(btnLuu = new JButton("Lưu"));
 
 // Đăng ký sự kiện
+btnTim.addActionListener(this);
 btnThem.addActionListener(this);
 btnXoa.addActionListener(this);
 btnXoaTrang.addActionListener(this);
@@ -140,29 +135,32 @@ table.addMouseListener(this);
 
 dsnv = new DanhSachNhanVien();
 fi = new fileDocGhi();
+
 try {
-    dsnv = (DanhSachNhanVien) fi.readFromFile(tenfile);
+    Object obj = fi.readFile(tenfile);
+    if (obj != null)
+        dsnv = (DanhSachNhanVien) obj;
 } catch (Exception e) {
-    System.out.println("Khong tim thay file");
+    // giữ danh sách rỗng
 }
+
 hienTable();
 }
 
-@Override
-public void actionPerformed(ActionEvent e) {
-Object o = e.getSource();
-if (o.equals(btnThem)) themActions();
-if (o.equals(btnXoa)) xoaActions();
-if (o.equals(btnSua)) suaActions();
-if (o.equals(btnXoaTrang)) xoaTrangActions();
-if (o.equals(btnLuu)) {
-    fi = new fileDocGhi();
-    try {
-        fi.writeToFile(dsnv, tenfile);
-    } catch (Exception e1) {
-        e1.printStackTrace();
-    }
-}
+
+
+private void timActions() {
+ 
+    int maNV = Integer.parseInt(txtTim.getText().trim());
+    NhanVien nv = dsnv.timKiem(maNV);
+    txtMaNV.setText(String.valueOf(nv.getMaNV()));
+    txtHo.setText(nv.getHo());
+    txtTen.setText(nv.getTen());
+    radNu.setSelected(nv.isPhai());
+    txtTuoi.setText(String.valueOf(nv.getTuoi()));
+    cboPhong.setSelectedItem(nv.getPhong());
+    txtTienLuong.setText(String.valueOf(nv.getTienLuong()));
+
 }
 
 private void xoaActions() {
@@ -178,40 +176,6 @@ if (row != -1) {
 }
 }
 
-public void mouseClicked(MouseEvent e) {
-int row = table.getSelectedRow();
-txtMaNV.setText(table.getValueAt(row, 0).toString());
-txtHo.setText(table.getValueAt(row, 1).toString());
-txtTen.setText(table.getValueAt(row, 2).toString());
-radNu.setSelected(table.getValueAt(row, 3).toString().equals("true"));
-txtTuoi.setText(table.getValueAt(row, 4).toString());
-txtTienLuong.setText(table.getValueAt(row, 6).toString());
-}
-
-private void suaActions() {
-NhanVien nvNew = taoNhanVienTuForm();
-int maNV = nvNew.getMaNV();
-if (dsnv.suaNhanVien(maNV, nvNew)) {
-    hienTable();
-} else {
-    JOptionPane.showMessageDialog(this, "Cần chọn nhân viên để cập nhật");
-}
-}
-
-public void hienTable() {
-XoaHetDuLieuTrenTableModel();
-for (int i = 0; i < dsnv.tong(); i++) {
-    NhanVien nv = dsnv.getNhanVien(i);
-    String[] dataRow = {nv.getMaNV() + "", nv.getHo(), nv.getTen(), Boolean.toString(nv.isPhai()), nv.getTuoi() + "", nv.getPhong(), nv.getTienLuong() + ""};
-    tableModel.addRow(dataRow);
-}
-}
-
-private void XoaHetDuLieuTrenTableModel() {
-DefaultTableModel dm = (DefaultTableModel) table.getModel();
-dm.getDataVector().removeAllElements();
-}
-
 private void xoaTrangActions() {
 txtMaNV.setText("");
 txtHo.setText("");
@@ -223,8 +187,21 @@ radNu.setSelected(false);
 txtMaNV.requestFocus();
 }
 
+private void suaActions() {
+int maNV = Integer.parseInt(txtMaNV.getText());
+String ho = txtHo.getText();
+String ten = txtTen.getText();
+boolean phai = radNu.isSelected() ? true : false;
+int tuoi = Integer.parseInt(txtTuoi.getText());
+String phong = (String) cboPhong.getSelectedItem();
+double tienLuong = Double.parseDouble(txtTienLuong.getText());
+NhanVien nvNew = new NhanVien(maNV, ho, ten, phai, tuoi, phong, tienLuong);
+if (dsnv.suaNhanVien(maNV, nvNew)) {
+    hienTable();
+} 
+}
 private void themActions() {
-try {
+
     int maNV = Integer.parseInt(txtMaNV.getText());
     String ho = txtHo.getText();
     String ten = txtTen.getText();
@@ -240,11 +217,51 @@ try {
         txtMaNV.selectAll();
         txtMaNV.requestFocus();
     }
-} catch (Exception ex) {
-    JOptionPane.showMessageDialog(null, "Lỗi nhập liệu.");
+
+}
+public void mouseClicked(MouseEvent e) {
+int row = table.getSelectedRow();
+txtMaNV.setText(table.getValueAt(row, 0).toString());
+txtHo.setText(table.getValueAt(row, 1).toString());
+txtTen.setText(table.getValueAt(row, 2).toString());
+radNu.setSelected(table.getValueAt(row, 3).toString().equals("true"));
+txtTuoi.setText(table.getValueAt(row, 4).toString());
+txtTienLuong.setText(table.getValueAt(row, 6).toString());
+}
+
+
+
+public void hienTable() {
+XoaHetDuLieuTrenTableModel();
+for (int i = 0; i < dsnv.tong(); i++) {
+    NhanVien nv = dsnv.getNhanVien(i);
+    String[] dataRow = {nv.getMaNV() + "", nv.getHo(), nv.getTen(), Boolean.toString(nv.isPhai()), nv.getTuoi() + "", nv.getPhong(), nv.getTienLuong() + ""};
+    tableModel.addRow(dataRow);
 }
 }
 
+private void XoaHetDuLieuTrenTableModel() {
+DefaultTableModel dm = (DefaultTableModel) table.getModel();
+dm.getDataVector().removeAllElements();
+}
+
+@Override
+public void actionPerformed(ActionEvent e) {
+Object o = e.getSource();
+if (o.equals(btnTim)) timActions();
+if (o.equals(btnThem)) themActions();
+if (o.equals(btnXoa)) xoaActions();
+if (o.equals(btnSua)) suaActions();
+if (o.equals(btnXoaTrang)) xoaTrangActions();
+if (o.equals(btnLuu)) {
+    fi = new fileDocGhi();
+    try {
+        fi.writeFile(dsnv, tenfile);
+    } catch (Exception e1) {
+        e1.printStackTrace();
+    }
+}
+}
 @Override
 public void mousePressed(MouseEvent e) {
 	// TODO Auto-generated method stub

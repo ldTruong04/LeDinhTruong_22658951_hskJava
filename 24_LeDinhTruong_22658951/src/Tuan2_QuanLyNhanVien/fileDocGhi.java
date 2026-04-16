@@ -10,17 +10,16 @@ import java.io.ObjectOutputStream;
 
 public class fileDocGhi {
 
-    public static void writeToFile(DanhSachNhanVien dsnv, String file) throws Exception {
-        ObjectOutputStream out = null;
-        out = new ObjectOutputStream(new FileOutputStream(file));
-        out.writeObject(dsnv);
+    public static void writeFile(DanhSachNhanVien ds, String file) throws Exception {
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+        out.writeObject(ds);
         out.close();
     }
 
-    public Object readFromFile(String file) throws Exception {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-        Object list = ois.readObject();
-        ois.close();
+    public Object readFile(String file) throws Exception {
+        ObjectInputStream oi = new ObjectInputStream(new FileInputStream(file));
+        Object list = oi.readObject();
+        oi.close();
         return list;
     }
 }
