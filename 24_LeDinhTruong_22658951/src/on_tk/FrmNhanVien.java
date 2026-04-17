@@ -180,7 +180,7 @@ if(!(ten.length() > 0 && ten.matches("[a-zA-Z\s]+"))){
 	txtTen.requestFocus();
 	return false;
 }
-if(!(web.length() > 0 && web.matches("^www+[a-zA-Z0-9._%+-]+@gmail.com$"))){
+if(!(web.length() > 0 && web.matches("^www[a-zA-Z0-9._%+-]+@gmail.com$"))){
 	
 	JOptionPane.showMessageDialog(this,"Error: email www.xxxxxx@gmail.com");
 	txtEmail.requestFocus();
